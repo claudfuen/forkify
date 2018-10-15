@@ -1,0 +1,19 @@
+Model-View-Controller
+Architecture Pattern
+
+Real Modules, is a better separation of concerns...
+
+
+
+Model (data and apps logic)
+    Search.js
+    Recipe
+
+Controller
+    Index.js
+
+View (Get data from and to UI)
+    SearchView.js
+
+Why do we do it this way, because it increases the flexibility of the code
+
