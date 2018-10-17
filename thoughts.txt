@@ -5,15 +5,10 @@ C- I really enjoy It
 D- Faster Prototyping and building out real life projects
 
 
-
-
 What other priorities might this be taking me away from.
 A- How do we acquire more users
 B- Reply to All my Emails
 C- Next
-D- 
-
-
 
 When we Speak to Chintan:
 - 1: Team/Surinder next steps: Working form home, etc..?
@@ -26,14 +21,102 @@ When we Speak to Chintan:
 - 2:   
 - 3: Explore insights... Top 3. Bottom 3....
 
-
-
 -- Shopify...
 -- Facebook...
--- 
 
-
+Top Sales Priorities
 -- Shoney:
 -- Shopify:
-
 -- WeWork:
+
+
+For Today - Top Initiatives:
+- Clear Inbox -- Done
+- Shopify -- Done
+- Change Name on Shopify per Feedback
+- Run Script for Sony -- Done
+- Reduce Salesey Component of Messaging -- Done
+- Prepare Deck for Shoney -- Done
+--- Chintan Deck -- Done
+--- How it works -- Done 
+--- Pricing min $100 per customer/mo -- Done 
+- Shortlist of Insights sent today
+- Send Insights Emails
+- Chat emails...
+
+
+After installing the app from the Shopify App store, the app is redirecting to the website where the app is hosted.
+When accessing the app from a shop's app dashboard the app is redirecting to the embedded version. 
+This occurs when an initial OAuth request redirect fails to escape the iframe. 
+Please refer to our embedded app OAuth documentation for further information.  
+
+
+Your app is not using the Billing API. 
+We are no longer accepting apps who are not using it and moving all existing apps over as well. 
+All fees associated with your service need to be handled by 
+Shopify using the Billing API.
+
+
+AskNed Priorities:
+-- Shoney:
+---- Send Hailey Insights - Pending Chintan
+-- Shopify:
+---- Figure Out Billing API - Done
+---- Figure Out OAuth iFrame Break - Done 
+-- WeWork:
+
+
+
+============================================================================================
+Shopify Billing API:
+https://help.shopify.com/en/api/app-store/charging-for-your-app/guides/implement-billing-model
+============================================================================================
+Do this right on account creation......... It will automatically manage the trial period and charges accordingly.
+
+1- First, create a recurring charge ---- Need 4 things for this:\
+POST /admin/recurring_application_charges.json
+We need to track if the user is reinstalling the app and then prorate their free trial. We can calculate this by looking into their cancellation day
+And this can ebe done by subscribing to the cancellation web hook
+
+{
+  "recurring_application_charge": {
+    "name": "Super Duper Plan",
+    "price": 10.0,
+    "return_url": "http://super-duper.shopifyapps.com",
+    "trial_days": 7
+  }
+}
+
+
+2- Second, redirect the merchant to the Confirmation URL returned by shopify.
+
+{
+    "application_charge": {
+        "id": 44433414,
+        "name": "App charge",
+        "api_client_id": 1968176,
+        "price": "100.00",
+        "status": "pending",
+        "return_url": "http://super-duper.shopifyapps.com/",
+        "test": true,
+        "created_at": "2018-02-09T14:04:54-05:00",
+        "updated_at": "2018-02-09T14:04:54-05:00",
+        "charge_type": null,
+        "decorated_return_url": "http://super-duper.shopifyapps.com/?charge_id=44433414",
+        "confirmation_url": "https://domain.myshopify.com/admin/charges/44433414/confirm_application_charge?signature=BAhpBAYApgI%3D--b7661dbc3eac11eaeb71b1d0e9b9bcb4b9a531ba"
+    }
+}
+
+3- Third, get the Charge ID from the reposnse, and activate the charge by sending a post request to: 
+/admin/recurring_application_charges/{charge_id}/activate.json
+
+
+
+============================================================================================
+Shopify OAuth Break:
+https://help.shopify.com/en/api/embedded-apps/embedded-app-sdk/getting-started#oauth
+https://help.shopify.com/en/api/getting-started/authentication/oauth#step-2-ask-for-permission
+============================================================================================
+
+We need to use the METHOD on the Shopify Embedded App SDK so that it escapes the iFrame, istead of redirecting from our self-hosted url. The OAuth has to occur on a parent level redirect window, not the frame, and this is easily achieved with the SDK
+
